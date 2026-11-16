@@ -1,6 +1,7 @@
 # 汉L EV 热管理系统三维查看器
 
-在线查看：https://cyberfifi.github.io/hanl-thermal-viewer/
+- 三维查看器：https://cyberfifi.github.io/hanl-thermal-viewer/
+- 设计汇报报告：https://cyberfifi.github.io/hanl-thermal-viewer/report/
 
 可旋转、拆解的三维模型，包含座舱空调、热泵、电池直冷板和电驱冷却回路的全部零件。
 

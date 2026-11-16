@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>汉L EV 整车热管理系统概念设计汇报</title>
+<meta name="description" content="汉L EV 整车热管理系统概念设计汇报：设计初衷、技术细节、总装图、爆炸图和全部零部件图册。概念设计，非比亚迪数据。">
+<style>
+:root {
+  --bg: #e9edf1; --panel: #f8fafb; --ink: #17212b; --muted: #586675; --line: #c9d2da;
+  --accent: #0a62b8; --accent-ink: #ffffff; --note: #fff6dd; --note-line: #d9a514; --paper: #ffffff;
+  --sans: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Hiragino Sans GB", system-ui, sans-serif;
+  --mono: ui-monospace, Menlo, Consolas, "PingFang SC", "Microsoft YaHei", monospace;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #0f151b; --panel: #161e26; --ink: #e4eaf0; --muted: #91a1b1; --line: #2b3742;
+  --accent: #62adff; --accent-ink: #06121f; --note: #2a2410; --note-line: #c79a1e; color-scheme: dark } }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.8; }
+a { color: var(--accent); }
+.top { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 12px; height: 52px;
+  padding: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px));
+  background: var(--panel); border-bottom: 1px solid var(--line); }
+.top .brand { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.top .go { margin-left: auto; flex: none; font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap;
+  background: var(--accent); color: var(--accent-ink); border-radius: 6px; padding: 7px 14px; }
+.wrap { display: grid; grid-template-columns: 220px minmax(0, 880px); gap: 40px; justify-content: center;
+  padding: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); }
+.toc { position: sticky; top: 52px; align-self: start; max-height: calc(100vh - 52px); overflow: auto; padding: 28px 0; font-size: 14px; }
+.toc .lbl { color: var(--muted); font-size: 12px; letter-spacing: .12em; margin: 0 0 8px 12px; }
+.toc a { display: flex; gap: 8px; padding: 6px 12px; color: var(--muted); text-decoration: none; border-left: 2px solid var(--line); line-height: 1.5; }
+.toc a .n { flex: none; width: 1.2em; font-family: var(--mono); }
+.toc a:hover { color: var(--ink); }
+.toc a.on { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+main { min-width: 0; padding: 36px 0 56px; }
+.hero { border-bottom: 1px solid var(--line); padding-bottom: 22px; margin-bottom: 8px; }
+.hero .meta { color: var(--muted); font-size: 14px; letter-spacing: .04em; margin: 0 0 8px; }
+h1 { font-size: clamp(26px, 4.2vw, 38px); line-height: 1.3; font-weight: 700; margin: 0; text-wrap: balance; }
+section { scroll-margin-top: 64px; }
+h2 { display: flex; align-items: baseline; gap: 12px; font-size: 24px; line-height: 1.4; font-weight: 700; margin: 52px 0 14px; padding-top: 18px; border-top: 3px solid var(--ink); }
+h2 .num { flex: none; color: var(--accent); font-family: var(--mono); font-size: 20px; }
+section:first-of-type h2 { margin-top: 30px; }
+h3 { font-size: 18px; line-height: 1.5; font-weight: 700; margin: 34px 0 8px; }
+p { margin: 12px 0; }
+section > h2 + p { font-size: 17.5px; }
+ul, ol { margin: 12px 0; padding-left: 1.5em; }
+li { margin: 5px 0; }
+.note { background: var(--note); border-left: 4px solid var(--note-line); border-radius: 0 6px 6px 0; padding: 12px 16px; font-size: 15px; line-height: 1.75; }
+.tbl { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 16px 0; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; line-height: 1.6; font-variant-numeric: tabular-nums; }
+table.wide { min-width: 900px; }
+table.wide td:first-child { min-width: 13em; }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+th { font-weight: 600; color: var(--muted); font-size: 13.5px; white-space: nowrap; background: var(--bg); }
+tbody tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 600; }
+figure { margin: 22px 0; }
+figure a { display: block; background: var(--paper); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; cursor: zoom-in; }
+figure img { display: block; width: 100%; height: auto; }
+figcaption { display: flex; gap: 10px; align-items: baseline; margin-top: 8px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+figcaption .zoom { margin-left: auto; flex: none; font-size: 12.5px; opacity: .8; }
+figcaption .fn { flex: none; font-family: var(--mono); font-size: 12.5px; color: var(--accent); border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; }
+footer { border-top: 1px solid var(--line); margin-top: 56px; padding-top: 18px; color: var(--muted); font-size: 13.5px; line-height: 1.75; }
+@media (max-width: 980px) {
+  .wrap { display: block; }
+  .toc { top: 52px; z-index: 4; display: flex; gap: 6px; max-height: none; overflow-x: auto; overflow-y: hidden; padding: 8px 16px; margin: 0 -16px;
+    background: var(--bg); border-bottom: 1px solid var(--line); scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .toc::-webkit-scrollbar { display: none; }
+  .toc .lbl { display: none; }
+  .toc a { flex: none; gap: 5px; border: 1px solid var(--line); border-radius: 16px; padding: 6px 12px; background: var(--panel); white-space: nowrap; }
+  .toc a .n { width: auto; }
+  .toc a.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  main { padding-top: 22px; }
+  section { scroll-margin-top: 112px; }
+  h2 { font-size: 21px; margin-top: 40px; }
+  h2 .num { font-size: 18px; }
+  .top .brand { font-size: 14px; }
+}
+@media print {
+  .top, .toc { display: none; }
+  .wrap { display: block; }
+  body { background: #fff; font-size: 11pt; }
+  figure, .tbl, .note { break-inside: avoid; }
+  figcaption .zoom { display: none; }
+  h2, h3 { break-after: avoid; }
+}
+</style>
+</head>
+<body>
+<div class="top">
+  <span class="brand">汉L EV 热管理系统 · 概念设计汇报</span>
+  <a class="go" href="../">三维查看器 →</a>
+</div>
+<div class="wrap">
+  <nav class="toc" id="toc" aria-label="目录">
+    <p class="lbl">目录</p>
+    <a href="#s1"><span class="n">一</span>设计初衷</a>
+    <a href="#s2"><span class="n">二</span>方案总览</a>
+    <a href="#s3"><span class="n">三</span>设计依据与计算结果</a>
+    <a href="#s4"><span class="n">四</span>系统原理与七种工作模式</a>
+    <a href="#s5"><span class="n">五</span>整车布置与总装效果</a>
+    <a href="#s6"><span class="n">六</span>系统爆炸图</a>
+    <a href="#s7"><span class="n">七</span>关键零部件</a>
+    <a href="#s8"><span class="n">八</span>全部零部件图册</a>
+    <a href="#s9"><span class="n">九</span>零件清单与质量</a>
+    <a href="#s10"><span class="n">十</span>验证结果与后续工作</a>
+  </nav>
+  <main>
+    <div class="hero">
+      <p class="meta">概念设计汇报 · 2026 年 11 月 15 日</p>
+      <h1>汉L EV 整车热管理系统概念设计汇报</h1>
+    </div>
+<section id="s1"><h2><span class="num">一</span>设计初衷</h2>
+<p>兆瓦闪充让电池成为整车最大的热负荷，热管理系统必须围绕电池快充来设计，而不只是围绕座舱舒适性。</p>
+<p>汉L EV 是基于 1000 V 高压平台的旗舰轿车，搭载 83.2 kWh 磷酸铁锂电池，支持峰值 1000 A、1 兆瓦的闪充。按我们的估算，闪充时电池瞬时发热可达 42 kW，是座舱制冷负荷（约 7 kW）的六倍。</p>
+<p>本方案围绕五个目标展开：</p>
+<ul><li><strong>一套制冷剂回路管全车</strong>：座舱制冷、热泵采暖、电池直冷直热共用一台压缩机。</li><li><strong>闪充全程电芯不超过 50 °C</strong>：包括电池老化、热车起充的最不利情况。</li><li><strong>低温采暖靠热泵</strong>：-10 °C 环境下不依赖电加热，节省续航。</li><li><strong>余热不浪费</strong>：电驱和充电机的废热可回收用于座舱采暖和电池加热。</li><li><strong>高度集成</strong>：全部阀件、板式换热器和气液分离器集中在一个阀组内，缩短管路、减少接头。</li></ul>
+<p class="note"><strong>重要说明</strong>：本方案是我方独立完成的概念设计。整车外形尺寸、轴距、1000 V 电压、83.2 kWh 电池容量和兆瓦闪充为公开信息；其余所有数据均为我方的假设和计算结果，不是比亚迪的原厂数据。</p>
+</section>
+<section id="s2"><h2><span class="num">二</span>方案总览</h2>
+<p>系统采用 R1234yf 直接式热泵，由一台 57 cc 电动涡旋压缩机驱动，共 76 个部件、954 个零件，干重约 80 kg。</p>
+<div class="tbl"><table><thead><tr><th>子系统</th><th>主要部件</th><th>作用</th></tr></thead><tbody><tr><td>制冷剂回路</td><td>电动压缩机、前端室外换热器、风扇模块、集成阀组（4 个电子膨胀阀、4 个电磁阀、1 个单向阀、板式换热器、气液分离器）</td><td>产生冷量和热量，并按工作模式分配</td></tr><tr><td>制冷剂管路</td><td>10 根铝管（其中 2 根带柔性段）、管夹支架、过墙密封圈</td><td>连接各部件</td></tr><tr><td>座舱空调箱</td><td>蒸发器、内部冷凝器、5 kW PTC 电加热器、双温区滑动风门、模式风门、鼓风机、空调滤芯</td><td>处理并分配座舱空气</td></tr><tr><td>风道</td><td>除霜、吹面、前排吹脚、后排风道及出风口</td><td>把空气送到各出风口</td></tr><tr><td>电池冷板</td><td>上、下两块制冷剂直冷板及进出口集管</td><td>闪充时冷却电池，低温时加热电池</td></tr><tr><td>电驱冷却液回路</td><td>低温散热器、电子水泵、三通阀、膨胀水箱、8 根水管</td><td>冷却电驱，并把余热送入热泵</td></tr><tr><td>传感器与控制器</td><td>压力温度传感器、各类温度和空气质量传感器、热管理控制器</td><td>测量与控制</td></tr></tbody></table></div>
+<p>关键指标：</p>
+<div class="tbl"><table><thead><tr><th>指标</th><th>数值</th></tr></thead><tbody><tr><td>制冷剂</td><td>R1234yf，估算充注量约 2.4 kg</td></tr><tr><td>压缩机</td><td>57 cc 涡旋式，最高 9000 rpm，集成 1000 V 逆变器</td></tr><tr><td>电池闪充冷却能力</td><td>20 kW（35 °C 环境）</td></tr><tr><td>座舱制冷能力</td><td>7.0 kW（43 °C 环境）</td></tr><tr><td>座舱热泵采暖能力</td><td>5.9 kW（-10 °C 环境）</td></tr><tr><td>工作模式</td><td>7 种</td></tr><tr><td>系统干重</td><td>约 80 kg（估算）</td></tr></tbody></table></div>
+</section>
+<section id="s3"><h2><span class="num">三</span>设计依据与计算结果</h2>
+<p>所有设计工况下压缩机转速均不超过 9000 rpm，10 根制冷剂管路流速均在限值以内。以下数值均为我方计算，用 CoolProp 物性库求解。</p>
+<h3>座舱负荷</h3>
+<div class="tbl"><table><thead><tr><th>工况</th><th>稳态负荷 (kW)</th><th>设计负荷 (kW)</th><th>主要来源</th></tr></thead><tbody><tr><td>制冷，环境 43 °C、日照 1000 W/m²</td><td>6.28</td><td>7.04（含快速降温余量）</td><td>新风 2.56、车身传热 1.80、日照 1.17</td></tr><tr><td>采暖，环境 -10 °C</td><td>4.52</td><td>5.87（含升温余量）</td><td>新风 3.00、车身传热 1.92</td></tr></tbody></table></div>
+<p>电驱和车载充电机的持续余热约 4.7 kW。</p>
+<h3>兆瓦闪充时的电池温度（SOC 7% 充至 80%）</h3>
+<p>20 kW 的制冷剂冷却能力可在最不利情况下把电芯峰值温度控制在 49.5 °C，低于 50 °C 限值。计算假设电池包内阻 42 mΩ，电流从 1000 A 逐步降至 50% SOC 时的 217 A，使 7% 到 50% 用时 4.5 分钟（与公开报道一致）。</p>
+<div class="tbl"><table><thead><tr><th>场景</th><th>起始温度 (°C)</th><th>冷却能力 (kW)</th><th>电芯峰值温度 (°C)</th></tr></thead><tbody><tr><td>新电池</td><td>38</td><td>0</td><td>46.8</td></tr><tr><td>新电池</td><td>38</td><td>10</td><td>41.7</td></tr><tr><td>新电池</td><td>38</td><td>20</td><td>39.8</td></tr><tr><td>老化电池（内阻 +50%），热车起充</td><td>45</td><td>0</td><td>58.2</td></tr><tr><td>老化电池（内阻 +50%），热车起充</td><td>45</td><td>10</td><td>52.0</td></tr><tr><td>老化电池（内阻 +50%），热车起充</td><td>45</td><td>20</td><td>49.5</td></tr></tbody></table></div>
+<h3>制冷循环设计工况</h3>
+<div class="tbl"><table class="wide"><thead><tr><th>工况</th><th>蒸发 / 冷凝温度 (°C)</th><th>低压 / 高压 (bar)</th><th>制冷量 (kW)</th><th>制热量 (kW)</th><th>耗电 (kW)</th><th>COP</th><th>压缩机转速 (rpm)</th></tr></thead><tbody><tr><td>兆瓦闪充，环境 35 °C</td><td>15 / 58</td><td>5.1 / 15.7</td><td>20.0</td><td>25.8</td><td>6.3</td><td>3.19</td><td>8591</td></tr><tr><td>座舱快速降温，环境 43 °C</td><td>3 / 65</td><td>3.5 / 18.3</td><td>7.0</td><td>10.7</td><td>4.0</td><td>1.78</td><td>5878</td></tr><tr><td>座舱 + 电池同时制冷，38 °C 高速</td><td>5 / 60</td><td>3.7 / 16.4</td><td>9.0</td><td>12.8</td><td>4.1</td><td>2.19</td><td>6129</td></tr><tr><td>热泵采暖，-10 °C，环境取热</td><td>-17 / 50</td><td>1.7 / 13.0</td><td>3.7</td><td>5.9</td><td>2.3</td><td>2.51</td><td>6238</td></tr><tr><td>热泵采暖，-10 °C，余热回收</td><td>0 / 50</td><td>3.2 / 13.0</td><td>4.3</td><td>5.9</td><td>1.7</td><td>3.48</td><td>3031</td></tr><tr><td>电池加热，-20 °C，余热回收</td><td>-8 / 30</td><td>2.4 / 7.8</td><td>4.8</td><td>6.0</td><td>1.3</td><td>4.62</td><td>3492</td></tr></tbody></table></div>
+<p>制冷工况的 COP 按制冷量计，采暖和电池加热工况按制热量计。-10 °C 环境取热时，压缩机满转速可提供 8.5 kW，高于 5.9 kW 的需求，PTC 电加热器只作备用。</p>
+<h3>前端换热与风量</h3>
+<ul><li>前端换热器迎风面积 0.365 m²，驻车闪充时风扇提供 1.75 m³/s 风量，面风速 4.8 m/s。</li><li>35 °C 环境下散掉 25.8 kW 热量，要求换热效能 0.57，出风温升约 13 K。</li><li>蒸发器迎风面积 0.072 m²，520 m³/h 风量下面风速 2.0 m/s。</li><li>电驱冷却液流量 15 L/min，流经电驱后温升 5.2 K。</li></ul>
+</section>
+<section id="s4"><h2><span class="num">四</span>系统原理与七种工作模式</h2>
+<p>同一套回路通过 8 个阀的开关组合实现 7 种工作模式，每种模式的流路均由程序按回路拓扑自动求解并校验：有且只有一个节流阀，流路闭合。</p>
+<p>回路的换热器有六个：前端室外换热器、座舱蒸发器、座舱内部冷凝器、上下两块电池冷板、与电驱冷却液换热的板式换热器。</p>
+<div class="tbl"><table><thead><tr><th>模式</th><th>放热（冷凝）</th><th>吸热（蒸发）</th><th>节流阀</th><th>设计工况</th></tr></thead><tbody><tr><td>1 座舱制冷</td><td>前端换热器</td><td>蒸发器</td><td>EXV2</td><td>43 °C 环境，7.0 kW</td></tr><tr><td>2 热泵采暖（环境取热）</td><td>内部冷凝器</td><td>前端换热器</td><td>EXV1</td><td>-10 °C 环境，5.9 kW</td></tr><tr><td>3 除湿再热</td><td>内部冷凝器 + 前端换热器</td><td>蒸发器</td><td>EXV2</td><td>空气先冷却除湿再加热</td></tr><tr><td>4 兆瓦闪充电池冷却</td><td>前端换热器</td><td>上、下电池冷板</td><td>EXV3</td><td>35 °C 环境，20 kW</td></tr><tr><td>5 电池加热（余热回收）</td><td>上、下电池冷板</td><td>板式换热器</td><td>EXV4</td><td>-20 °C 环境，6 kW</td></tr><tr><td>6 座舱采暖（余热回收）</td><td>内部冷凝器</td><td>板式换热器</td><td>EXV4</td><td>需 4.3 kW 余热，电驱可提供 4.7 kW</td></tr><tr><td>7 座舱与电池同时制冷</td><td>前端换热器</td><td>蒸发器 + 电池冷板</td><td>EXV2、EXV3</td><td>38 °C 环境，座舱 5 kW + 电池 4 kW</td></tr></tbody></table></div>
+<p>模式 5 中制冷剂在电池冷板内反向流动并冷凝，直接加热电池。模式 6 中前端换热器被隔离，不会结霜。模式切换时压缩机先降速，阀门到位后再升速。</p>
+<p>下方依次为系统原理图、模式 4（兆瓦闪充）流路图和模式 2（热泵采暖）流路图。图中红色为高压热气，橙色为高压液体，浅蓝为低压两相，深蓝为低压气体，绿色为电驱冷却液。</p>
+<figure><a href="img/full/f01.png" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f01.png" width="1302" height="816" alt="系统原理图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 1</span><span>系统原理图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f02.png" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f02.png" width="1302" height="816" alt="模式 4：兆瓦闪充电池冷却流路图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 2</span><span>模式 4：兆瓦闪充电池冷却流路图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f03.png" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f03.png" width="1302" height="816" alt="模式 2：热泵采暖流路图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 3</span><span>模式 2：热泵采暖流路图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+</section>
+<section id="s5"><h2><span class="num">五</span>整车布置与总装效果</h2>
+<p>76 个部件已全部布置进整车，逐对实体干涉检查无重叠（共检查 373 对相邻部件）。</p>
+<p>布置要点：</p>
+<ul><li><strong>前端</strong>：室外换热器在最前，其后依次为低温散热器和双风扇模块，保证闪充时冷凝器得到最冷的空气。</li><li><strong>前舱</strong>：压缩机位于前电驱右前方；集成阀组靠近前围板，到空调箱的管路只有 126 mm。</li><li><strong>座舱</strong>：空调箱在仪表板下方正中，鼓风机在副驾侧；风道通向除霜、吹面、吹脚和后排出风口。</li><li><strong>底盘</strong>：上、下两块冷板夹住电芯，制冷剂从电池包前端进出；冷却液管沿左侧门槛通向后电驱。</li></ul>
+<p>车身轮廓、前围板、地板、电池包和电驱的外形仅作布置参考，除整车长宽高和轴距外均为假设。</p>
+<p>下方依次为：整车总装轴测图、俯视图、侧视图、去掉车身后的系统总装图、前舱左侧和右侧视图、空调箱与风道。</p>
+<figure><a href="img/full/f04.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f04.jpg" width="1600" height="1000" alt="整车总装轴测图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 4</span><span>整车总装轴测图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f05.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f05.jpg" width="1600" height="1000" alt="整车俯视图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 5</span><span>整车俯视图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f06.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f06.jpg" width="1600" height="1000" alt="整车侧视图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 6</span><span>整车侧视图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f07.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f07.jpg" width="1600" height="1000" alt="去掉车身后的系统总装图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 7</span><span>去掉车身后的系统总装图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f08.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f08.jpg" width="1600" height="1000" alt="前舱左侧视图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 8</span><span>前舱左侧视图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f09.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f09.jpg" width="1600" height="1000" alt="前舱右侧视图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 9</span><span>前舱右侧视图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f10.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f10.jpg" width="1600" height="1000" alt="空调箱与风道" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 10</span><span>空调箱与风道</span><span class="zoom">点击图片放大</span></figcaption></figure>
+</section>
+<section id="s6"><h2><span class="num">六</span>系统爆炸图</h2>
+<p>爆炸图把 76 个部件从系统中心向外拉开，可以看清每个部件的位置和彼此的连接关系。红色为高压气管，蓝色为低压回气管，绿色为冷却液管，浅蓝色半透明件为风道。</p>
+<figure><a href="img/full/f11.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f11.jpg" width="1600" height="1000" alt="系统爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 11</span><span>系统爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<p>每个部件自身的爆炸图（拆到单个零件）见第七、第八节。</p>
+</section>
+<section id="s7"><h2><span class="num">七</span>关键零部件</h2>
+<p>以下六组部件决定系统性能，每组均配有装配图（左）和拆到单个零件的爆炸图（右）。</p>
+<h3>1. 电动涡旋压缩机</h3>
+<p>系统的心脏，由 26 种、39 个零件组成，外形 180 × 262 × 168 mm，质量约 7.2 kg。</p>
+<ul><li>排量 57 cc，最高转速 9000 rpm，兆瓦闪充工况耗电 6.3 kW。</li><li>涡旋盘型线为圆的渐开线，壁厚 4 mm，动盘回转半径约 5.1 mm。</li><li>从排气端到电控端依次为：排气端盖、静涡旋盘、动涡旋盘、十字滑环、主机架、曲轴、转子、定子、电机壳体、逆变器。</li><li>集成 1000 V 碳化硅逆变器，由吸气侧的低温制冷剂冷却。</li></ul>
+<figure><a href="img/full/f12.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f12.jpg" width="1600" height="1000" alt="压缩机在前舱的位置（与前端换热模块）" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 12</span><span>压缩机在前舱的位置（与前端换热模块）</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f13.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f13.jpg" width="1600" height="743" alt="电动压缩机：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 13</span><span>电动压缩机：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<h3>2. 集成阀组</h3>
+<p>把全部阀件集中在一块 300 × 60 × 200 mm 的锻铝阀块上，外接 9 个管口。</p>
+<ul><li><strong>阀块</strong>：内部加工高压气、液体、吸气三条主流道和 8 个阀腔，并内置单向阀。</li><li><strong>电子膨胀阀（4 个）</strong>：步进电机转子密封在不锈钢隔离罩内，经丝杆带动阀针精确调节流量。</li><li><strong>电磁截止阀（4 个）</strong>：12 V 线圈吸合动铁芯，弹簧复位。</li><li><strong>板式换热器</strong>：22 片人字形波纹不锈钢板，制冷剂与电驱冷却液换热。</li><li><strong>气液分离器</strong>：容积 1.2 L，两片式壳体，内有挡板、J 形回气管和干燥剂包。</li><li><strong>压力温度传感器（4 个）</strong>：分别监测排气、吸气、前端换热器出口和电池冷板出口。</li></ul>
+<figure><a href="img/full/f14.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f14.jpg" width="1600" height="1000" alt="集成阀组总成" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 14</span><span>集成阀组总成</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f15.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f15.jpg" width="1600" height="743" alt="阀块：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 15</span><span>阀块：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f16.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f16.jpg" width="1600" height="743" alt="电子膨胀阀：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 16</span><span>电子膨胀阀：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f17.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f17.jpg" width="1600" height="743" alt="电磁截止阀：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 17</span><span>电磁截止阀：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f18.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f18.jpg" width="1600" height="743" alt="板式换热器：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 18</span><span>板式换热器：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f19.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f19.jpg" width="1600" height="743" alt="气液分离器：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 19</span><span>气液分离器：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<h3>3. 前端换热模块</h3>
+<p>由室外换热器、低温散热器和风扇模块三层组成，驻车闪充时要散掉约 26 kW 热量。</p>
+<ul><li><strong>室外换热器</strong>：60 根微通道扁管（每根 12 孔），波纹翅片，双流程，芯体 760 × 480 × 22 mm。制冷时作冷凝器，热泵采暖时作蒸发器。</li><li><strong>低温散热器</strong>：44 根扁管，塑料水室，芯体 680 × 440 × 27 mm，冷却电驱。</li><li><strong>风扇模块</strong>：两个 410 mm 七叶环形风扇，无刷电机 2 × 600 W。</li></ul>
+<figure><a href="img/full/f20.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f20.jpg" width="1600" height="743" alt="前端室外换热器：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 20</span><span>前端室外换热器：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f21.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f21.jpg" width="1600" height="743" alt="冷却风扇模块：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 21</span><span>冷却风扇模块：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<h3>4. 座舱空调箱</h3>
+<p>双温区设计，左右两侧可独立调温，设计风量 520 m³/h。</p>
+<ul><li><strong>蒸发器</strong>：35 根扁管，芯体 320 × 264 × 40 mm，制冷量 7 kW。</li><li><strong>内部冷凝器</strong>：22 根扁管，芯体 250 × 165 × 27 mm，热泵采暖时向座舱放热 6 kW。</li><li><strong>PTC 电加热器</strong>：5 kW，6 组陶瓷发热元件，作极寒工况的备用热源。</li><li><strong>滑动式冷暖风门</strong>：左右各一片，齿条齿轮驱动，上下滑动切换空气流经或绕过加热芯体。</li><li><strong>鼓风机</strong>：170 mm 前弯离心叶轮，40 片叶片，螺旋线蜗壳，350 W 无刷电机。</li><li><strong>空调滤芯</strong>：PM2.5 级褶皱滤材加活性炭层。</li></ul>
+<figure><a href="img/full/f22.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f22.jpg" width="1600" height="1000" alt="空调箱剖视图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 22</span><span>空调箱剖视图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f23.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f23.jpg" width="1600" height="743" alt="蒸发器：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 23</span><span>蒸发器：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f24.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f24.jpg" width="1600" height="743" alt="内部冷凝器：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 24</span><span>内部冷凝器：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f25.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f25.jpg" width="1600" height="743" alt="鼓风机叶轮：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 25</span><span>鼓风机叶轮：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f26.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f26.jpg" width="1600" height="743" alt="冷暖风门：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 26</span><span>冷暖风门：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<h3>5. 电池直冷板</h3>
+<p>上、下两块冷板把电芯夹在中间，制冷剂直接在板内蒸发，换热面积比单面冷却增加一倍。</p>
+<ul><li>每块 2016 × 1430 mm，由平板与冲压流道板钓焊而成，16 条并联流道。</li><li>冷板与电芯之间有导热垫。</li><li>两根竖直集管把上、下冷板并联，从电池包前端进出。</li></ul>
+<figure><a href="img/full/f27.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f27.jpg" width="1600" height="1000" alt="电池冷板与冷却液回路在底盘的布置" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 27</span><span>电池冷板与冷却液回路在底盘的布置</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f28.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f28.jpg" width="1600" height="743" alt="上冷板：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 28</span><span>上冷板：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<h3>6. 电驱冷却液回路</h3>
+<p>冷却前、后电驱，并通过板式换热器把约 4.7 kW 余热送入热泵。</p>
+<ul><li><strong>电子水泵</strong>：15 L/min，80 W，蜗壳、叶轮、湿式转子电机一体。</li><li><strong>电动三通阀</strong>：L 形球阀芯，在“走散热器”和“旁通”之间切换。</li><li><strong>膨胀水箱</strong>：2.5 L，带压力盖和液位传感器。</li></ul>
+<figure><a href="img/full/f29.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f29.jpg" width="1600" height="743" alt="电子水泵：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 29</span><span>电子水泵：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f30.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f30.jpg" width="1600" height="743" alt="电动三通阀：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 30</span><span>电动三通阀：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f31.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f31.jpg" width="1600" height="743" alt="膨胀水箱：装配图与爆炸图" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 31</span><span>膨胀水箱：装配图与爆炸图</span><span class="zoom">点击图片放大</span></figcaption></figure>
+</section>
+<section id="s8"><h2><span class="num">八</span>全部零部件图册</h2>
+<p>以下 10 页图册收录全部 76 个部件，每个部件左侧为装配状态，右侧为拆到单个零件的爆炸图，并标注零件名称和数量。编号与零件清单一致。</p>
+<figure><a href="img/full/f32.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f32.jpg" width="1600" height="1486" alt="图册第 1 页：部件 1 至 8" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 32</span><span>图册第 1 页：部件 1 至 8</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f33.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f33.jpg" width="1600" height="1486" alt="图册第 2 页：部件 9 至 16" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 33</span><span>图册第 2 页：部件 9 至 16</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f34.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f34.jpg" width="1600" height="1486" alt="图册第 3 页：部件 17 至 24" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 34</span><span>图册第 3 页：部件 17 至 24</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f35.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f35.jpg" width="1600" height="1486" alt="图册第 4 页：部件 25 至 32" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 35</span><span>图册第 4 页：部件 25 至 32</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f36.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f36.jpg" width="1600" height="1486" alt="图册第 5 页：部件 33 至 40" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 36</span><span>图册第 5 页：部件 33 至 40</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f37.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f37.jpg" width="1600" height="1486" alt="图册第 6 页：部件 41 至 48" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 37</span><span>图册第 6 页：部件 41 至 48</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f38.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f38.jpg" width="1600" height="1486" alt="图册第 7 页：部件 49 至 56" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 38</span><span>图册第 7 页：部件 49 至 56</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f39.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f39.jpg" width="1600" height="1486" alt="图册第 8 页：部件 57 至 64" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 39</span><span>图册第 8 页：部件 57 至 64</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f40.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f40.jpg" width="1600" height="1486" alt="图册第 9 页：部件 65 至 72" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 40</span><span>图册第 9 页：部件 65 至 72</span><span class="zoom">点击图片放大</span></figcaption></figure>
+<figure><a href="img/full/f41.jpg" target="_blank" rel="noopener" title="点击查看大图"><img src="img/f41.jpg" width="1600" height="743" alt="图册第 10 页：部件 73 至 76" loading="lazy" decoding="async"></a><figcaption><span class="fn">图 41</span><span>图册第 10 页：部件 73 至 76</span><span class="zoom">点击图片放大</span></figcaption></figure>
+</section>
+<section id="s9"><h2><span class="num">九</span>零件清单与质量</h2>
+<p>全系统共 76 个部件、285 种零件、954 个零件，估算干重 80.3 kg，制冷剂充注量约 2.44 kg。</p>
+<div class="tbl"><table><thead><tr><th>子系统</th><th>部件数</th><th>零件种类</th><th>零件总数</th><th>估算质量 (kg)</th></tr></thead><tbody><tr><td>制冷剂回路部件</td><td>10</td><td>94</td><td>339</td><td>25.4</td></tr><tr><td>制冷剂管路</td><td>13</td><td>22</td><td>31</td><td>2.6</td></tr><tr><td>座舱空调箱</td><td>20</td><td>73</td><td>299</td><td>9.9</td></tr><tr><td>风道</td><td>6</td><td>12</td><td>50</td><td>2.7</td></tr><tr><td>电池冷板</td><td>4</td><td>14</td><td>20</td><td>31.3</td></tr><tr><td>电驱冷却液回路</td><td>16</td><td>47</td><td>180</td><td>7.7</td></tr><tr><td>传感器与控制器</td><td>7</td><td>23</td><td>35</td><td>0.7</td></tr><tr><td><strong>合计</strong></td><td><strong>76</strong></td><td><strong>285</strong></td><td><strong>954</strong></td><td><strong>80.3</strong></td></tr></tbody></table></div>
+<p>质量为估算值：外购件取同类产品的典型质量，壳体、风道、管路按体积乘以材料密度计算。制冷剂充注量按各部件内容积和平均密度估算，需经充注量试验确认。逐项清单见随附的零件清单图纸和表格文件。</p>
+</section>
+<section id="s10"><h2><span class="num">十</span>验证结果与后续工作</h2>
+<p>当前方案通过了几何和计算层面的全部自检，但尚未做换热器性能校核、压降计算和试验验证。</p>
+<h3>已完成的检查</h3>
+<div class="tbl"><table><thead><tr><th>检查项</th><th>结果</th></tr></thead><tbody><tr><td>实体干涉检查</td><td>373 对相邻部件，无重叠（阈值 1 mm³）</td></tr><tr><td>三维实体有效性</td><td>全部实体有效</td></tr><tr><td>工作模式流路</td><td>7 种模式均有闭合流路，且只有一处节流</td></tr><tr><td>压缩机转速</td><td>所有设计工况均不超过 9000 rpm</td></tr><tr><td>管路流速</td><td>10 根制冷剂管路均在限值内</td></tr><tr><td>电池峰值温度</td><td>最不利情况 49.5 °C，限值 50 °C</td></tr><tr><td>二维图纸</td><td>68 张 DXF 图纸格式检查无错误</td></tr></tbody></table></div>
+<h3>尚未验证的事项</h3>
+<ul><li>换热器性能只按所需换热效能做了粗核，没有做详细的换热计算。</li><li>管路、冷板和风道的压降没有计算，只校核了流速。</li><li>没有做结构强度、振动、噪声和碰撞评估。</li><li>电池内阻、充电电流曲线和整车硬点为假设值。</li><li>三维模型是有代表性的概念几何，不含公差、拔模斜度和工艺细节，不能直接用于制造。</li></ul>
+<h3>建议的后续工作</h3>
+<ol><li>用实测的电池内阻和充电曲线替换假设值，复核闪充冷却能力。</li><li>对前端换热器、蒸发器、内部冷凝器和电池冷板做换热与压降详细计算。</li><li>建立系统一维仿真模型，验证模式切换和控制策略。</li><li>与整车布置数据对接，修正硬点和管路走向。</li><li>制作样件，进行台架和环境舱试验，确定制冷剂充注量。</li></ol>
+</section>
+    <footer>
+      本方案为概念设计。整车外形尺寸、轴距、1000 V 电压、83.2 kWh 电池容量和兆瓦闪充为公开信息；其余数据均为设计方的假设和计算结果，不是比亚迪的原厂数据。<br>
+      图片可点击查看大图。全部零件可在 <a href="../">三维查看器</a> 中旋转、拆解查看。
+    </footer>
+  </main>
+</div>
+<script>
+(function () {
+  var toc = document.getElementById("toc"), links = [].slice.call(toc.querySelectorAll("a"));
+  var secs = links.map(function (a) { return document.getElementById(a.getAttribute("href").slice(1)); });
+  var cur = -1;
+  function mark() {
+    var y = window.innerWidth <= 980 ? 130 : 90, k = 0;
+    for (var i = 0; i < secs.length; i++) if (secs[i].getBoundingClientRect().top <= y) k = i;
+    if (k === cur) return;
+    cur = k;
+    links.forEach(function (a, i) { a.classList.toggle("on", i === k); });
+    if (window.innerWidth <= 980) {                       // keep the active chip in view without moving the page
+      var a = links[k];
+      toc.scrollTo({ left: a.offsetLeft - (toc.clientWidth - a.offsetWidth) / 2, behavior: "smooth" });
+    }
+  }
+  window.addEventListener("scroll", mark, { passive: true });
+  window.addEventListener("resize", mark);
+  mark();
+})();
+</script>
+</body>
+</html>
